@@ -228,12 +228,18 @@ main {
 
 .btn-clear {
     background: none;
-    border: 1px solid #ccc;
+    border: 1px solid red;
     padding: 0.5rem;
     border-radius: 10px;
     cursor: pointer;
     color: #888;
     order: -1;
+    transition: var(--transition);
+}
+
+.btn-clear:hover {
+    background-color: red;
+    transition: var(--transition);
 }
 
 /* Modale */
@@ -404,7 +410,8 @@ main {
         width: 95%;
     }
     .btn-clear {
-        order: -1;
+        order: 2;
+        width: 100%;
     }
     .btn-order {
         width: auto;
