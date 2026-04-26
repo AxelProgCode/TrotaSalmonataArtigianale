@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prenotazioni Trota Salmonata Artigianale</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="hero">
+        <span class="hero-icon">🐟</span>
+        <h1>Trota Salmonata Artigianale</h1>
+        <p class="subtitle">Seleziona i prodotti e invia l'ordine. I tuoi dati verranno salvati in automatico.</p>
+    </header>
+
+    <main class="container">
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">Tutti</button>
+            <button class="filter-btn" data-filter="hamburger">🍔 Hamburger</button>
+            <button class="filter-btn" data-filter="surgelato">❄️ Surgelati</button>
+            <button class="filter-btn" data-filter="affumicato">🔥 Affumicati</button>
+            <button class="filter-btn" data-filter="marinato">🥫 Marinati</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+
+        <!-- Modale per inserimento nome -->
+        <div class="modal-overlay" id="modalOverlay" style="display: none;">
+            <div class="modal">
+                <h2>📝 Inserisci il tuo nome</h2>
+                <p class="modal-subtitle">Per completare l'ordine, indica chi sei</p>
+                <input type="text" id="customerName" placeholder="Il tuo nome e cognome" class="modal-input" />
+                <div class="modal-buttons">
+                    <button class="btn-cancel" id="btnCancelOrder">Annulla</button>
+                    <button class="btn-confirm" id="btnConfirmOrder">✅ Invia Ordine</button>
+                </div>
+                <p id="modalError" class="modal-error" style="display: none;">⚠️ Inserisci un nome valido</p>
+            </div>
+        </div>
+
+        <!-- Messaggio di conferma -->
+        <div class="toast" id="toast" style="display: none;">
+            <span id="toastMessage"></span>
+        </div>
+
+        <div class="cart-summary" id="cartSummary" style="display: none;">
+            <button class="btn-clear" id="btnClearCart" title="Svuota carrello">🗑️</button>
+            <strong id="cartText">Carrello vuoto</strong>
+            <button class="btn-order" id="btnOpenOrder">
+                📋 Completa Ordine
+            </button>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2025 Trota Salmonata Artigianale - Tutti i diritti riservati</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
