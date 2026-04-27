@@ -1,26 +1,46 @@
+const isBookingOpen = 1; // 1 = aperto, 0 = chiuso
+
 const products = [
-    { id: '1', category: 'hamburger', name: 'Hamburger di Trota', sheetColumn: 'B', emoji: '🍔', desc: '100% trota, speziato.', price: '3,00/pz' },
-    { id: '2', category: 'surgelato', name: 'Filetto Surgelato', sheetColumn: 'C', emoji: '❄️', desc: 'Pulito e abbattuto sottovuoto.', price: '20,00/kg' },
-    { id: '3', category: 'affumicato', name: 'Filetto Affumicato', sheetColumn: 'D', emoji: '🔥', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg' },
-    { id: '4', category: 'affumicato', name: 'Filetto Affumicato allo Speck', sheetColumn: 'E', emoji: '🔥', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg' },
-    { id: '5', category: 'marinato', name: 'Vasetto Marinato', sheetColumn: 'F', emoji: '🥫', desc: 'In olio e erbe aromatiche.', price: '5,00/pz' },
-    { id: '6', category: 'marinato', name: 'Vasetto Marinato con Porro e Sedano', sheetColumn: 'G', emoji: '🥫', desc: 'In olio e erbe aromatiche.', price: '5,00/pz' }
+    { id: '1', category: 'hamburger', name: 'Hamburger di Trota', sheetColumn: 'B', emoji: '🍔', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: true },
+    { id: '2', category: 'surgelato', name: 'Filetto Surgelato', sheetColumn: 'C', emoji: '❄️', desc: 'Pulito e abbattuto sottovuoto.', price: '20,00/kg', soldOut: false },
+    { id: '3', category: 'affumicato', name: 'Filetto Affumicato', sheetColumn: 'D', emoji: '🔥', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false },
+    { id: '4', category: 'affumicato', name: 'Filetto Affumicato allo Speck', sheetColumn: 'E', emoji: '🔥', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false },
+    { id: '5', category: 'marinato', name: 'Vasetto Marinato', sheetColumn: 'F', emoji: '🥫', desc: 'In olio e erbe aromatiche.', price: '5,00/pz', soldOut: false },
+    { id: '6', category: 'marinato', name: 'Vasetto Marinato con Porro e Sedano', sheetColumn: 'G', emoji: '🥫', desc: 'In olio e erbe aromatiche.', price: '5,00/pz', soldOut: false }
 ];
 
 let cart = {}; 
 let currentFilter = 'all';
 
-// ⚠️ SOSTITUISCI CON L'URL DEL TUO WEB APP DI GOOGLE APPS SCRIPT
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxfHQbIfgmu7APL3aQurbua4i057qr3q00c3fobhdS3ZfmTyO9L7pMko3bob1ZkjlLOog/exec';
 
 function render() {
     const grid = document.getElementById('productsGrid');
+    const statusMsg = document.getElementById('statusMessage');
+    const closedBanner = document.getElementById('closedBanner');
     const filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
     
+    if (!isBookingOpen) {
+        closedBanner.style.display = "block"; // Mostra il banner grande
+        grid.classList.add('grid-closed'); // Applica l'effetto visivo alla griglia
+    } else {
+        statusMsg.style.display = "block";
+        closedBanner.style.display = "none";
+        grid.classList.remove('grid-closed');
+    }
+
     grid.innerHTML = filtered.map(p => {
         const qty = cart[p.id] || 0;
+        
+        // Verifica se il singolo prodotto è esaurito o se le prenotazioni totali sono chiuse
+        const isSoldOut = p.soldOut || !isBookingOpen; 
+        
+        const disabledAttr = isSoldOut ? 'disabled' : '';
+        const addBtnText = isSoldOut ? '🔒 Esaurito' : '🛒 Aggiungi';
+        const cardClass = isSoldOut ? 'card-disabled' : '';
+
         return `
-            <div class="product-card">
+            <div class="product-card ${cardClass}">
                 <div class="product-emoji">${p.emoji}</div>
                 <div class="product-name">${p.name}</div>
                 <div class="product-desc">${p.desc}</div>
@@ -28,10 +48,10 @@ function render() {
                     <span>💰 €${p.price}</span>
                 </div>
                 <div class="qty-controls ${qty > 0 ? 'has-items' : ''}" data-id="${p.id}">
-                    <button class="qty-btn qty-minus" onclick="updateQty('${p.id}', -1)">−</button>
+                    <button class="qty-btn qty-minus" onclick="updateQty('${p.id}', -1)" ${disabledAttr}>−</button>
                     <span class="qty-display">${qty}</span>
-                    <button class="qty-btn qty-plus" onclick="updateQty('${p.id}', 1)">+</button>
-                    <button class="btn-add" onclick="updateQty('${p.id}', 1)">🛒 Aggiungi</button>
+                    <button class="qty-btn qty-plus" onclick="updateQty('${p.id}', 1)" ${disabledAttr}>+</button>
+                    <button class="btn-add" onclick="updateQty('${p.id}', 1)" ${disabledAttr}>${addBtnText}</button>
                 </div>
             </div>
         `;
@@ -41,6 +61,11 @@ function render() {
 }
 
 function updateQty(id, delta) {
+    const product = products.find(p => p.id === id);
+    
+    // Blocca se le prenotazioni sono chiuse o se il prodotto è soldOut
+    if (!isBookingOpen || (product && product.soldOut)) return;
+
     cart[id] = (cart[id] || 0) + delta;
     if (cart[id] <= 0) delete cart[id];
     render();
@@ -49,11 +74,10 @@ function updateQty(id, delta) {
 function updateCartUI() {
     const summary = document.getElementById('cartSummary');
     const cartText = document.getElementById('cartText');
-    
     const items = Object.entries(cart);
     const total = items.reduce((acc, curr) => acc + curr[1], 0);
 
-    if (total > 0) {
+    if (total > 0 && isBookingOpen) {
         summary.style.display = 'flex';
         cartText.innerText = `Articoli nel carrello: ${total}`;
     } else {
@@ -61,7 +85,6 @@ function updateCartUI() {
     }
 }
 
-// Gestione filtri
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.onclick = () => {
         document.querySelector('.filter-btn.active').classList.remove('active');
@@ -71,14 +94,13 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     };
 });
 
-// Svuota carrello
 document.getElementById('btnClearCart').onclick = () => {
     cart = {};
     render();
 };
 
-// Apri modale ordine
 document.getElementById('btnOpenOrder').onclick = () => {
+    if (!isBookingOpen) return;
     if (Object.keys(cart).length === 0) {
         showToast('⚠️ Il carrello è vuoto!', 'error');
         return;
@@ -89,22 +111,18 @@ document.getElementById('btnOpenOrder').onclick = () => {
     setTimeout(() => document.getElementById('customerName').focus(), 100);
 };
 
-// Chiudi modale
 document.getElementById('btnCancelOrder').onclick = () => {
     document.getElementById('modalOverlay').style.display = 'none';
 };
 
-// Click fuori dal modale per chiudere
 document.getElementById('modalOverlay').onclick = (e) => {
     if (e.target === document.getElementById('modalOverlay')) {
         document.getElementById('modalOverlay').style.display = 'none';
     }
 };
 
-// Invio ordine
 document.getElementById('btnConfirmOrder').onclick = async () => {
     const name = document.getElementById('customerName').value.trim();
-    
     if (!name || name.length < 2) {
         document.getElementById('modalError').style.display = 'block';
         document.getElementById('customerName').focus();
@@ -121,7 +139,6 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
         cart = {};
         render();
     } catch (error) {
-        console.error('Errore invio ordine:', error);
         showToast('❌ Errore nell\'invio. Riprova.', 'error');
     } finally {
         document.getElementById('btnConfirmOrder').disabled = false;
@@ -130,7 +147,6 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
 };
 
 async function sendToGoogleSheet(customerName) {
-    // Prepara i dati per ogni colonna del foglio
     const orderData = {
         nome: customerName,
         hamburger: cart['1'] || 0,
@@ -142,37 +158,25 @@ async function sendToGoogleSheet(customerName) {
         timestamp: new Date().toISOString()
     };
 
-    const response = await fetch(GOOGLE_SHEET_URL, {
+    return await fetch(GOOGLE_SHEET_URL, {
         method: 'POST',
-        mode: 'no-cors', // Importante per CORS con Google Apps Script
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
     });
-
-    // Con no-cors non possiamo leggere la risposta, ma l'invio funziona
-    return response;
 }
 
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
-    
     toastMessage.textContent = message;
     toast.className = `toast toast-${type}`;
     toast.style.display = 'block';
-    
-    setTimeout(() => {
-        toast.style.display = 'none';
-    }, 3000);
+    setTimeout(() => { toast.style.display = 'none'; }, 3000);
 }
 
-// Invio con tasto Enter nel campo nome
 document.getElementById('customerName').onkeypress = (e) => {
-    if (e.key === 'Enter') {
-        document.getElementById('btnConfirmOrder').click();
-    }
+    if (e.key === 'Enter') document.getElementById('btnConfirmOrder').click();
 };
 
 render();

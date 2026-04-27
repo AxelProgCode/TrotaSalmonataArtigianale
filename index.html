@@ -11,10 +11,15 @@
     <header class="hero">
         <span class="hero-icon">🐟</span>
         <h1>Trota Salmonata Artigianale</h1>
-        <p class="subtitle">Seleziona i prodotti e invia l'ordine. I tuoi dati verranno salvati in automatico.</p>
+        <p class="subtitle" id="statusMessage">Seleziona i prodotti e invia l'ordine. Il tuo ordine verrà salvato in automatico.</p>
     </header>
 
     <main class="container">
+        <div id="closedBanner" class="closed-banner" style="display: none;">
+            <h2>🚫 Prenotazioni Momentaneamente Chiuse</h2>
+            <p>Siamo spiacenti, le prenotazioni al momento non sono disponibili.</p>
+        </div>
+
         <div class="filters">
             <button class="filter-btn active" data-filter="all">Tutti</button>
             <button class="filter-btn" data-filter="hamburger">🍔 Hamburger</button>
@@ -25,7 +30,6 @@
 
         <div class="products-grid" id="productsGrid"></div>
 
-        <!-- Modale per inserimento nome -->
         <div class="modal-overlay" id="modalOverlay" style="display: none;">
             <div class="modal">
                 <h2>📝 Inserisci il tuo nome</h2>
@@ -39,13 +43,12 @@
             </div>
         </div>
 
-        <!-- Messaggio di conferma -->
         <div class="toast" id="toast" style="display: none;">
             <span id="toastMessage"></span>
         </div>
 
         <div class="cart-summary" id="cartSummary" style="display: none;">
-            <button class="btn-clear" id="btnClearCart" title="Svuota carrello">🗑️</button>
+            <button class="btn-clear" id="btnClearCart" title="Svuota carrello">Elimina</button>
             <strong id="cartText">Carrello vuoto</strong>
             <button class="btn-order" id="btnOpenOrder">
                 📋 Completa Ordine
@@ -54,7 +57,7 @@
     </main>
 
     <footer class="site-footer">
-        <p>© 2026 Trota Salmonata Artigianale - Tutti i diritti riservati</p>
+        <p>© 2025 Trota Salmonata Artigianale - Tutti i diritti riservati</p>
     </footer>
 
     <script src="script.js"></script>
