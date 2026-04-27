@@ -1,4 +1,4 @@
-const isBookingOpen = 1; // 1 = aperto, 0 = chiuso
+const isBookingOpen = 0; // 1 = aperto, 0 = chiuso
 
 const products = [
     { id: '1', category: 'hamburger', name: 'Hamburger di Trota', sheetColumn: 'B', emoji: '🍔', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false },
