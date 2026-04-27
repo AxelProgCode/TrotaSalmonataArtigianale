@@ -1,7 +1,7 @@
 const isBookingOpen = 1; // 1 = aperto, 0 = chiuso
 
 const products = [
-    { id: '1', category: 'hamburger', name: 'Hamburger di Trota', sheetColumn: 'B', emoji: '🍔', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: true },
+    { id: '1', category: 'hamburger', name: 'Hamburger di Trota', sheetColumn: 'B', emoji: '🍔', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false },
     { id: '2', category: 'surgelato', name: 'Filetto Surgelato', sheetColumn: 'C', emoji: '❄️', desc: 'Pulito e abbattuto sottovuoto.', price: '20,00/kg', soldOut: false },
     { id: '3', category: 'affumicato', name: 'Filetto Affumicato', sheetColumn: 'D', emoji: '🔥', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false },
     { id: '4', category: 'affumicato', name: 'Filetto Affumicato allo Speck', sheetColumn: 'E', emoji: '🔥', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false },
@@ -21,8 +21,8 @@ function render() {
     const filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
     
     if (!isBookingOpen) {
-        closedBanner.style.display = "block"; // Mostra il banner grande
-        grid.classList.add('grid-closed'); // Applica l'effetto visivo alla griglia
+        closedBanner.style.display = "block";
+        grid.classList.add('grid-closed');
     } else {
         statusMsg.style.display = "block";
         closedBanner.style.display = "none";
@@ -31,10 +31,7 @@ function render() {
 
     grid.innerHTML = filtered.map(p => {
         const qty = cart[p.id] || 0;
-        
-        // Verifica se il singolo prodotto è esaurito o se le prenotazioni totali sono chiuse
         const isSoldOut = p.soldOut || !isBookingOpen; 
-        
         const disabledAttr = isSoldOut ? 'disabled' : '';
         const addBtnText = isSoldOut ? '🔒 Esaurito' : '🛒 Aggiungi';
         const cardClass = isSoldOut ? 'card-disabled' : '';
@@ -62,8 +59,6 @@ function render() {
 
 function updateQty(id, delta) {
     const product = products.find(p => p.id === id);
-    
-    // Blocca se le prenotazioni sono chiuse o se il prodotto è soldOut
     if (!isBookingOpen || (product && product.soldOut)) return;
 
     cart[id] = (cart[id] || 0) + delta;
@@ -121,6 +116,17 @@ document.getElementById('modalOverlay').onclick = (e) => {
     }
 };
 
+// Nuovo listener per chiudere la modale di successo
+document.getElementById('btnCloseSuccess').onclick = () => {
+    document.getElementById('successOverlay').style.display = 'none';
+};
+
+document.getElementById('successOverlay').onclick = (e) => {
+    if (e.target === document.getElementById('successOverlay')) {
+        document.getElementById('successOverlay').style.display = 'none';
+    }
+};
+
 document.getElementById('btnConfirmOrder').onclick = async () => {
     const name = document.getElementById('customerName').value.trim();
     if (!name || name.length < 2) {
@@ -134,8 +140,12 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
 
     try {
         await sendToGoogleSheet(name);
-        document.getElementById('modalOverlay').style.display = 'none';
-        showToast('✅ Ordine inviato con successo!', 'success');
+        document.getElementById('modalOverlay').style.display = 'none'; // Nascondi modale nome
+        
+        // Mostra modale di successo con il nome del cliente
+        document.getElementById('successCustomerName').innerText = name;
+        document.getElementById('successOverlay').style.display = 'flex';
+        
         cart = {};
         render();
     } catch (error) {

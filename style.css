@@ -377,6 +377,20 @@ main {
     font-size: 0.9rem;
 }
 
+/* Stili specifici per la modale di successo */
+.success-modal .success-icon {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+}
+.success-modal p {
+    margin-bottom: 1.5rem;
+    color: var(--color-text-light);
+    line-height: 1.5;
+}
+.success-modal strong {
+    color: var(--color-primary);
+}
+
 /* Toast */
 .toast {
     position: fixed;
@@ -418,7 +432,7 @@ main {
     text-align: center;
     padding: 1.5rem;
     font-size: 0.9rem;
-    margin-top: auto;
+    margin-top: -50px;
 }
 
 /* Responsive */

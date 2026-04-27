@@ -16,8 +16,8 @@
 
     <main class="container">
         <div id="closedBanner" class="closed-banner" style="display: none;">
-            <h2>🚫 Prenotazioni Momentaneamente Chiuse</h2>
-            <p>Siamo spiacenti, le prenotazioni al momento non sono disponibili.</p>
+            <h2>🚫 Prenotazioni Chiuse</h2>
+            <p>Siamo spiacenti, le prenotazioni sono momentaneamente non disponibili.</p>
         </div>
 
         <div class="filters">
@@ -43,6 +43,15 @@
             </div>
         </div>
 
+        <div class="modal-overlay" id="successOverlay" style="display: none;">
+            <div class="modal success-modal">
+                <div class="success-icon">✅</div>
+                <h2>Ordine Inviato!</h2>
+                <p>Grazie <strong id="successCustomerName"></strong>, <br>il tuo ordine è stato registrato con successo.</p>
+                <button class="btn-confirm" id="btnCloseSuccess">OK</button>
+            </div>
+        </div>
+
         <div class="toast" id="toast" style="display: none;">
             <span id="toastMessage"></span>
         </div>
@@ -57,7 +66,7 @@
     </main>
 
     <footer class="site-footer">
-        <p>© 2025 Trota Salmonata Artigianale - Tutti i diritti riservati</p>
+        <p>© 2026 Trota Salmonata Artigianale - Tutti i diritti riservati</p>
     </footer>
 
     <script src="script.js"></script>
