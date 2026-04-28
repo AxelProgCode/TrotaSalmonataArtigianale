@@ -64,7 +64,7 @@ main {
 
 /* Stile per il Banner di Chiusura */
 .closed-banner {
-    background: #e74c3c;
+    background: #ff6961;
     color: white;
     padding: 2rem;
     border-radius: var(--radius-lg);
