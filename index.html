@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prenotazioni Trota Salmonata Artigianale</title>
+    <title>Ordina Trota Salmonata Artigianale</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,8 +16,8 @@
 
     <main class="container">
         <div id="closedBanner" class="closed-banner" style="display: none;">
-            <h2>🚫 Prenotazioni Chiuse</h2>
-            <p>Siamo spiacenti, le prenotazioni sono momentaneamente non disponibili.</p>
+            <h2>🚫 Ordinazioni Chiuse</h2>
+            <p>Siamo spiacenti, le ordinazioni sono momentaneamente non disponibili.</p>
         </div>
 
         <div class="filters">
@@ -32,7 +32,7 @@
 
         <div class="modal-overlay" id="modalOverlay" style="display: none;">
             <div class="modal">
-                <h2>📝 Inserisci il tuo nome</h2>
+                <h2>📝 Inserisci il nominativo</h2>
                 <p class="modal-subtitle">Per completare l'ordine, indica chi sei</p>
                 <input type="text" id="customerName" placeholder="Il tuo nome e cognome" class="modal-input" />
                 <div class="modal-buttons">
@@ -47,7 +47,7 @@
             <div class="modal success-modal">
                 <div class="success-icon">✅</div>
                 <h2>Ordine Inviato!</h2>
-                <p>Grazie <strong id="successCustomerName"></strong>, <br>il tuo ordine è stato registrato con successo.</p>
+                <p>Grazie <strong id="successCustomerName"></strong>,<br>il tuo ordine è stato registrato con successo.</p>
                 <button class="btn-confirm" id="btnCloseSuccess">OK</button>
             </div>
         </div>
