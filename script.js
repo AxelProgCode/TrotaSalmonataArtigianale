@@ -2,11 +2,11 @@ const isBookingOpen = 1; // 1 = aperto, 0 = chiuso
 
 const products = [
     { id: '1', name: 'Hamburger', sheetColumn: 'B', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false, isExtra: false },
-    { id: '2', name: 'Filetto Surgelato', sheetColumn: 'C', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e abbattuto sottovuoto.', price: '20,00/kg', soldOut: false, isExtra: false },
-    { id: '3', name: 'Filetto Affumicato', sheetColumn: 'D', img: 'img/filetto-affumicato.jpeg', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false, isExtra: false },
-    { id: '4', name: 'Filetto Affumicato allo Speck', sheetColumn: 'E', img: 'img/filetto-affumicato-speck.jpeg', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false, isExtra: false },
-    { id: '5', name: 'Bocconcini Marinati', sheetColumn: 'F', img: 'img/bocconcini-marinati.jpeg', desc: 'In olio e erbe aromatiche.', price: '5,00/pz', soldOut: false, isExtra: false },
-    { id: '6', name: 'Bocconcini Marinati con Porro e Sedano', sheetColumn: 'G', img: 'img/bocconcini-marinati-porro-e-sedano.jpeg', desc: 'In olio e erbe aromatiche.', price: '5,00/pz', soldOut: false, isExtra: false }
+    { id: '2', name: 'Filetto Surgelato', sheetColumn: 'C', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e sfilettato.', price: '20,00/kg', soldOut: false, isExtra: false },
+    { id: '3', name: 'Filetto Affumicato', sheetColumn: 'D', img: 'img/filetto-affumicato.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false, isExtra: false },
+    { id: '4', name: 'Filetto Affumicato allo Speck', sheetColumn: 'E', img: 'img/filetto-affumicato-speck.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false, isExtra: false },
+    { id: '5', name: 'Bocconcini Marinati', sheetColumn: 'F', img: 'img/bocconcini-marinati.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false, isExtra: false },
+    { id: '6', name: 'Bocconcini Marinati con Porro e Sedano', sheetColumn: 'G', img: 'img/bocconcini-marinati-porro-e-sedano.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false, isExtra: false }
 ];
 
 let cart = {};
