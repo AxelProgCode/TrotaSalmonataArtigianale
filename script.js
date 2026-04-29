@@ -1,35 +1,33 @@
 const isBookingOpen = 1; // 1 = aperto, 0 = chiuso
 
 const products = [
-    { id: '1', category: 'hamburger', name: 'Hamburger di Trota', sheetColumn: 'B', emoji: '🍔', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false },
-    { id: '2', category: 'surgelato', name: 'Filetto Surgelato', sheetColumn: 'C', emoji: '❄️', desc: 'Pulito e abbattuto sottovuoto.', price: '20,00/kg', soldOut: false },
-    { id: '3', category: 'affumicato', name: 'Filetto Affumicato', sheetColumn: 'D', emoji: '🔥', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false },
-    { id: '4', category: 'affumicato', name: 'Filetto Affumicato allo Speck', sheetColumn: 'E', emoji: '🔥', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false },
-    { id: '5', category: 'marinato', name: 'Vasetto Marinato', sheetColumn: 'F', emoji: '🥫', desc: 'In olio e erbe aromatiche.', price: '5,00/pz', soldOut: false },
-    { id: '6', category: 'marinato', name: 'Vasetto Marinato con Porro e Sedano', sheetColumn: 'G', emoji: '🥫', desc: 'In olio e erbe aromatiche.', price: '5,00/pz', soldOut: false }
+    { id: '1', name: 'Hamburger', sheetColumn: 'B', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false, isExtra: false },
+    { id: '2', name: 'Filetto Surgelato', sheetColumn: 'C', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e abbattuto sottovuoto.', price: '20,00/kg', soldOut: false, isExtra: false },
+    { id: '3', name: 'Filetto Affumicato', sheetColumn: 'D', img: 'img/filetto-affumicato.jpeg', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false, isExtra: false },
+    { id: '4', name: 'Filetto Affumicato allo Speck', sheetColumn: 'E', img: 'img/filetto-affumicato-speck.jpeg', desc: 'Affumicatura a legna tradizionale.', price: '30,00/kg', soldOut: false, isExtra: false },
+    { id: '5', name: 'Bocconcini Marinati', sheetColumn: 'F', img: 'img/bocconcini-marinati.jpeg', desc: 'In olio e erbe aromatiche.', price: '5,00/pz', soldOut: false, isExtra: false },
+    { id: '6', name: 'Bocconcini Marinati con Porro e Sedano', sheetColumn: 'G', img: 'img/bocconcini-marinati-porro-e-sedano.jpeg', desc: 'In olio e erbe aromatiche.', price: '5,00/pz', soldOut: false, isExtra: false }
 ];
 
-let cart = {}; 
-let currentFilter = 'all';
+let cart = {};
 
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxfHQbIfgmu7APL3aQurbua4i057qr3q00c3fobhdS3ZfmTyO9L7pMko3bob1ZkjlLOog/exec';
 
 function render() {
-    const grid = document.getElementById('productsGrid');
+    const productsGrid = document.getElementById('productsGrid');
     const statusMsg = document.getElementById('statusMessage');
     const closedBanner = document.getElementById('closedBanner');
-    const filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
     
     if (!isBookingOpen) {
         closedBanner.style.display = "block";
-        grid.classList.add('grid-closed');
+        productsGrid.classList.add('grid-closed');
     } else {
         statusMsg.style.display = "block";
         closedBanner.style.display = "none";
-        grid.classList.remove('grid-closed');
+        productsGrid.classList.remove('grid-closed');
     }
 
-    grid.innerHTML = filtered.map(p => {
+    productsGrid.innerHTML = products.map(p => {
         const qty = cart[p.id] || 0;
         const isSoldOut = p.soldOut || !isBookingOpen; 
         const disabledAttr = isSoldOut ? 'disabled' : '';
@@ -38,11 +36,13 @@ function render() {
 
         return `
             <div class="product-card ${cardClass}">
-                <div class="product-emoji">${p.emoji}</div>
+                <div class="product-image">
+                    <img src="${p.img}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div class=\\'product-emoji\\'>🐟</div>'">
+                </div>
                 <div class="product-name">${p.name}</div>
                 <div class="product-desc">${p.desc}</div>
                 <div class="product-meta">
-                    <span>💰 €${p.price}</span>
+                    <span>€${p.price}</span>
                 </div>
                 <div class="qty-controls ${qty > 0 ? 'has-items' : ''}" data-id="${p.id}">
                     <button class="qty-btn qty-minus" onclick="updateQty('${p.id}', -1)" ${disabledAttr}>−</button>
@@ -74,20 +74,12 @@ function updateCartUI() {
 
     if (total > 0 && isBookingOpen) {
         summary.style.display = 'flex';
-        cartText.innerText = `Articoli nel carrello: ${total}`;
+        let text = `Articoli nel carrello: ${total}`;
+        cartText.innerText = text;
     } else {
         summary.style.display = 'none';
     }
 }
-
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.onclick = () => {
-        document.querySelector('.filter-btn.active').classList.remove('active');
-        btn.classList.add('active');
-        currentFilter = btn.dataset.filter;
-        render();
-    };
-});
 
 document.getElementById('btnClearCart').onclick = () => {
     cart = {};
@@ -102,6 +94,7 @@ document.getElementById('btnOpenOrder').onclick = () => {
     }
     document.getElementById('modalOverlay').style.display = 'flex';
     document.getElementById('customerName').value = '';
+    document.getElementById('offerCoffee').checked = false;
     document.getElementById('modalError').style.display = 'none';
     setTimeout(() => document.getElementById('customerName').focus(), 100);
 };
@@ -116,7 +109,6 @@ document.getElementById('modalOverlay').onclick = (e) => {
     }
 };
 
-// Nuovo listener per chiudere la modale di successo
 document.getElementById('btnCloseSuccess').onclick = () => {
     document.getElementById('successOverlay').style.display = 'none';
 };
@@ -129,6 +121,8 @@ document.getElementById('successOverlay').onclick = (e) => {
 
 document.getElementById('btnConfirmOrder').onclick = async () => {
     const name = document.getElementById('customerName').value.trim();
+    const coffeeSelected = document.getElementById('offerCoffee').checked;
+    
     if (!name || name.length < 2) {
         document.getElementById('modalError').style.display = 'block';
         document.getElementById('customerName').focus();
@@ -139,10 +133,9 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
     document.getElementById('btnConfirmOrder').innerHTML = '⏳ Invio in corso...';
 
     try {
-        await sendToGoogleSheet(name);
-        document.getElementById('modalOverlay').style.display = 'none'; // Nascondi modale nome
+        await sendToGoogleSheet(name, coffeeSelected);
+        document.getElementById('modalOverlay').style.display = 'none';
         
-        // Mostra modale di successo con il nome del cliente
         document.getElementById('successCustomerName').innerText = name;
         document.getElementById('successOverlay').style.display = 'flex';
         
@@ -156,7 +149,7 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
     }
 };
 
-async function sendToGoogleSheet(customerName) {
+async function sendToGoogleSheet(customerName, coffeeSelected) {
     const orderData = {
         nome: customerName,
         hamburger: cart['1'] || 0,
@@ -165,6 +158,7 @@ async function sendToGoogleSheet(customerName) {
         affumicatoSpeck: cart['4'] || 0,
         vasetto: cart['5'] || 0,
         vasettoPorro: cart['6'] || 0,
+        caffeSviluppatore: coffeeSelected ? 1 : 0,
         timestamp: new Date().toISOString()
     };
 
