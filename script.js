@@ -1,12 +1,12 @@
 const isBookingOpen = 1; // 1 = aperto, 0 = chiuso
 
 const products = [
-    { id: '1', name: 'Hamburger', sheetColumn: 'B', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false, isExtra: false },
-    { id: '2', name: 'Filetto Surgelato', sheetColumn: 'C', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e sfilettato.', price: '20,00/kg', soldOut: false, isExtra: false },
-    { id: '3', name: 'Filetto Affumicato', sheetColumn: 'D', img: 'img/filetto-affumicato.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false, isExtra: false },
-    { id: '4', name: 'Filetto Affumicato allo Speck', sheetColumn: 'E', img: 'img/filetto-affumicato-speck.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false, isExtra: false },
-    { id: '5', name: 'Bocconcini Marinati', sheetColumn: 'F', img: 'img/bocconcini-marinati.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false, isExtra: false },
-    { id: '6', name: 'Bocconcini Marinati con Porro e Sedano', sheetColumn: 'G', img: 'img/bocconcini-marinati-porro-e-sedano.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false, isExtra: false }
+    { id: '1', name: 'Hamburger', sheetColumn: 'B', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false, badge: 'Novità' },
+    { id: '2', name: 'Filetto Surgelato', sheetColumn: 'C', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e sfilettato.', price: '20,00/kg', soldOut: false },
+    { id: '3', name: 'Filetto Affumicato', sheetColumn: 'D', img: 'img/filetto-affumicato.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false },
+    { id: '4', name: 'Filetto Affumicato allo Speck', sheetColumn: 'E', img: 'img/filetto-affumicato-speck.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false },
+    { id: '5', name: 'Bocconcini Marinati', sheetColumn: 'F', img: 'img/bocconcini-marinati.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false },
+    { id: '6', name: 'Bocconcini Marinati con Porro e Sedano', sheetColumn: 'G', img: 'img/bocconcini-marinati-porro-e-sedano.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false }
 ];
 
 let cart = {};
@@ -74,8 +74,7 @@ function updateCartUI() {
 
     if (total > 0 && isBookingOpen) {
         summary.style.display = 'flex';
-        let text = `Articoli nel carrello: ${total}`;
-        cartText.innerText = text;
+        cartText.innerText = `Articoli nel carrello: ${total}`;
     } else {
         summary.style.display = 'none';
     }
@@ -94,7 +93,6 @@ document.getElementById('btnOpenOrder').onclick = () => {
     }
     document.getElementById('modalOverlay').style.display = 'flex';
     document.getElementById('customerName').value = '';
-    document.getElementById('offerCoffee').checked = false;
     document.getElementById('modalError').style.display = 'none';
     setTimeout(() => document.getElementById('customerName').focus(), 100);
 };
@@ -120,10 +118,10 @@ document.getElementById('successOverlay').onclick = (e) => {
 };
 
 document.getElementById('btnConfirmOrder').onclick = async () => {
-    const name = document.getElementById('customerName').value.trim();
-    const coffeeSelected = document.getElementById('offerCoffee').checked;
-    
-    if (!name || name.length < 2) {
+    let name = document.getElementById('customerName').value.trim();
+    name = name.replace(/\b\w/g, char => char.toUpperCase());
+
+    if (!name || name.length < 3) {
         document.getElementById('modalError').style.display = 'block';
         document.getElementById('customerName').focus();
         return;
@@ -133,7 +131,7 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
     document.getElementById('btnConfirmOrder').innerHTML = '⏳ Invio in corso...';
 
     try {
-        await sendToGoogleSheet(name, coffeeSelected);
+        await sendToGoogleSheet(name);
         document.getElementById('modalOverlay').style.display = 'none';
         
         document.getElementById('successCustomerName').innerText = name;
@@ -149,7 +147,7 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
     }
 };
 
-async function sendToGoogleSheet(customerName, coffeeSelected) {
+async function sendToGoogleSheet(customerName) {
     const orderData = {
         nome: customerName,
         hamburger: cart['1'] || 0,
@@ -158,7 +156,6 @@ async function sendToGoogleSheet(customerName, coffeeSelected) {
         affumicatoSpeck: cart['4'] || 0,
         vasetto: cart['5'] || 0,
         vasettoPorro: cart['6'] || 0,
-        caffeSviluppatore: coffeeSelected ? 1 : 0,
         timestamp: new Date().toISOString()
     };
 

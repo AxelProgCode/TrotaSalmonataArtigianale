@@ -69,7 +69,6 @@ main {
     margin: 0 auto;
 }
 
-/* Stile per il Banner di Chiusura */
 .closed-banner {
     background: #ff6961;
     color: white;
@@ -92,7 +91,6 @@ main {
     100% { opacity: 1; }
 }
 
-/* Effetto sulla griglia quando chiusa */
 .grid-closed {
     position: relative;
     opacity: 0.6;
@@ -100,7 +98,6 @@ main {
     filter: grayscale(0.5);
 }
 
-/* Pulsanti quando disabilitati */
 .btn-add:disabled {
     background: #95a5a6 !important;
     cursor: not-allowed;
@@ -236,7 +233,6 @@ main {
     display: none;
 }
 
-/* Barra carrello */
 .cart-summary {
     position: fixed;
     bottom: 1rem;
@@ -291,7 +287,6 @@ main {
     transition: var(--transition);
 }
 
-/* Modale */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -342,29 +337,6 @@ main {
     border-color: var(--color-primary);
 }
 
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    padding: 0.8rem;
-    background: #f9f6f0;
-    border-radius: var(--radius-md);
-    justify-content: center;
-}
-
-.checkbox-container input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
-.checkbox-container label {
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--color-text);
-}
-
 .modal-buttons {
     display: flex;
     gap: 0.8rem;
@@ -400,7 +372,8 @@ main {
     transition: var(--transition);
 }
 .btn-cancel:hover {
-    background: #f5f5f5;
+    color: red;
+    border-color: red;
 }
 
 .modal-error {
@@ -410,7 +383,6 @@ main {
     font-size: 0.9rem;
 }
 
-/* Stili specifici per la modale di successo */
 .success-modal .success-icon {
     font-size: 3.5rem;
     margin-bottom: 0.5rem;
@@ -424,7 +396,6 @@ main {
     color: var(--color-primary);
 }
 
-/* Toast */
 .toast {
     position: fixed;
     top: 1rem;
@@ -458,7 +429,6 @@ main {
     }
 }
 
-/* Footer */
 .site-footer {
     background: var(--color-primary-dark);
     color: rgba(255, 255, 255, 0.7);
@@ -468,7 +438,6 @@ main {
     margin-top: -50px;
 }
 
-/* Responsive */
 @media (max-width: 992px) {
     .products-grid {
         grid-template-columns: repeat(3, 1fr);
