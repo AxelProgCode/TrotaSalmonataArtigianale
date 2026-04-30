@@ -1,4 +1,4 @@
-const isBookingOpen = 2; // 2 = prenotazione, 1 = aperto, 0 = chiuso
+const isBookingOpen = 0; // 2 = prenotazione, 1 = aperto, 0 = chiuso
 
 const products = [
     { id: '1', name: 'Hamburger', sheetColumn: 'B', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false, badge: 'Novità' },
@@ -170,7 +170,7 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
         const successMessage = document.querySelector('#successOverlay .modal p');
         if (successMessage) {
             if (isBookingOpen === 2) {
-                successMessage.innerHTML = `Grazie <strong id="successCustomerName">${name}</strong>,<br>la tua prenotazione è stata registrata con successo. Riceverai una conferma quando le ordinazioni riapriranno.`;
+                successMessage.innerHTML = `Grazie <strong id="successCustomerName">${name}</strong>,<br>la tua prenotazione è stata registrata con successo.`;
             } else {
                 successMessage.innerHTML = `Grazie <strong id="successCustomerName">${name}</strong>,<br>il tuo ordine è stato registrato con successo.`;
             }
