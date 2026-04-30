@@ -1,4 +1,4 @@
-const isBookingOpen = 0; // 1 = aperto, 0 = chiuso
+const isBookingOpen = 0; // 2 = prenotazione, 1 = aperto, 0 = chiuso
 
 const products = [
     { id: '1', name: 'Hamburger', sheetColumn: 'B', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false, badge: 'Novità' },
@@ -16,22 +16,45 @@ const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxfHQbIfgmu7AP
 function render() {
     const productsGrid = document.getElementById('productsGrid');
     const statusMsg = document.getElementById('statusMessage');
-    const closedBanner = document.getElementById('closedBanner');
+    const banner = document.getElementById('banner');
     
-    if (!isBookingOpen) {
-        closedBanner.style.display = "block";
+    // Gestione banner in base allo stato
+    if (isBookingOpen === 0) {
+        // Chiuso
+        banner.style.display = "block";
+        banner.innerHTML = `
+            <h2>🚫 Ordinazioni Chiuse</h2>
+            <p>Siamo spiacenti, le ordinazioni sono momentaneamente non disponibili.</p>
+        `;
+        banner.className = 'banner banner-closed';
         productsGrid.classList.add('grid-closed');
-    } else {
         statusMsg.style.display = "block";
-        closedBanner.style.display = "none";
+        statusMsg.textContent = "❌ Le ordinazioni sono chiuse. Riprova domani.";
+    } else if (isBookingOpen === 2) {
+        // Prenotazione
+        banner.style.display = "block";
+        banner.innerHTML = `
+            <h2>📋 Prenotazioni Aperte</h2>
+            <p>Le ordinazioni ufficiali sono chiuse, ma puoi prenotare il tuo ordine in anticipo. La tua prenotazione verrà salvata e processata quando le ordinazioni riapriranno.</p>
+        `;
+        banner.className = 'banner banner-reservation';
         productsGrid.classList.remove('grid-closed');
+        statusMsg.style.display = "block";
+        statusMsg.textContent = "⚠️ Modalità prenotazione: gli ordini verranno processati in seguito.";
+    } else {
+        // Aperto
+        banner.style.display = "none";
+        productsGrid.classList.remove('grid-closed');
+        statusMsg.style.display = "block";
+        statusMsg.textContent = "✅ Seleziona i prodotti e invia l'ordine. Il tuo ordine verrà salvato in automatico.";
     }
 
     productsGrid.innerHTML = products.map(p => {
         const qty = cart[p.id] || 0;
-        const isSoldOut = p.soldOut || !isBookingOpen; 
+        const isSoldOut = p.soldOut || isBookingOpen === 0; 
         const disabledAttr = isSoldOut ? 'disabled' : '';
-        const addBtnText = isSoldOut ? '🔒 Esaurito' : '🛒 Aggiungi';
+        const addBtnText = isSoldOut ? '🔒 Esaurito' : 
+                          isBookingOpen === 2 ? '📋 Prenota' : '🛒 Aggiungi';
         const cardClass = isSoldOut ? 'card-disabled' : '';
 
         return `
@@ -59,7 +82,7 @@ function render() {
 
 function updateQty(id, delta) {
     const product = products.find(p => p.id === id);
-    if (!isBookingOpen || (product && product.soldOut)) return;
+    if (isBookingOpen === 0 || (product && product.soldOut)) return;
 
     cart[id] = (cart[id] || 0) + delta;
     if (cart[id] <= 0) delete cart[id];
@@ -72,7 +95,7 @@ function updateCartUI() {
     const items = Object.entries(cart);
     const total = items.reduce((acc, curr) => acc + curr[1], 0);
 
-    if (total > 0 && isBookingOpen) {
+    if (total > 0 && isBookingOpen !== 0) {
         summary.style.display = 'flex';
         cartText.innerText = `Articoli nel carrello: ${total}`;
     } else {
@@ -86,7 +109,7 @@ document.getElementById('btnClearCart').onclick = () => {
 };
 
 document.getElementById('btnOpenOrder').onclick = () => {
-    if (!isBookingOpen) return;
+    if (isBookingOpen === 0) return;
     if (Object.keys(cart).length === 0) {
         showToast('⚠️ Il carrello è vuoto!', 'error');
         return;
@@ -94,6 +117,13 @@ document.getElementById('btnOpenOrder').onclick = () => {
     document.getElementById('modalOverlay').style.display = 'flex';
     document.getElementById('customerName').value = '';
     document.getElementById('modalError').style.display = 'none';
+    
+    // Personalizza il titolo del modal in base allo stato
+    const modalTitle = document.querySelector('#modalOverlay .modal h2');
+    if (modalTitle) {
+        modalTitle.textContent = isBookingOpen === 2 ? '📋 Prenota il tuo ordine' : '📝 Inserisci il nominativo';
+    }
+    
     setTimeout(() => document.getElementById('customerName').focus(), 100);
 };
 
@@ -135,6 +165,17 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
         document.getElementById('modalOverlay').style.display = 'none';
         
         document.getElementById('successCustomerName').innerText = name;
+        
+        // Personalizza il messaggio di successo
+        const successMessage = document.querySelector('#successOverlay .modal p');
+        if (successMessage) {
+            if (isBookingOpen === 2) {
+                successMessage.innerHTML = `Grazie <strong id="successCustomerName">${name}</strong>,<br>la tua prenotazione è stata registrata con successo. Riceverai una conferma quando le ordinazioni riapriranno.`;
+            } else {
+                successMessage.innerHTML = `Grazie <strong id="successCustomerName">${name}</strong>,<br>il tuo ordine è stato registrato con successo.`;
+            }
+        }
+        
         document.getElementById('successOverlay').style.display = 'flex';
         
         cart = {};
@@ -156,6 +197,7 @@ async function sendToGoogleSheet(customerName) {
         affumicatoSpeck: cart['4'] || 0,
         vasetto: cart['5'] || 0,
         vasettoPorro: cart['6'] || 0,
+        tipo_ordine: isBookingOpen === 2 ? 'prenotazione' : 'ordine', // Aggiunge il tipo
         timestamp: new Date().toISOString()
     };
 

@@ -69,19 +69,33 @@ main {
     margin: 0 auto;
 }
 
-.closed-banner {
-    background: #ff6961;
-    color: white;
+.banner {
     padding: 2rem;
     border-radius: var(--radius-lg);
     text-align: center;
     margin-bottom: 2rem;
-    border: 4px dashed #c0392b;
 }
-
-.closed-banner h2 {
+.banner h2 {
     margin-bottom: 0.5rem;
     font-size: 1.8rem;
+}
+
+.banner-closed {
+    background: #ff6961;
+    color: white;
+    border: 4px dashed #c0392b;
+}
+.banner-closed h2 {
+    color: white;
+}
+
+.banner-reservation {
+    background: #ffd700;
+    color: #333;
+    border: 4px dashed #ff8c00;
+}
+.banner-reservation h2 {
+    color: #333;
 }
 
 .grid-closed {
