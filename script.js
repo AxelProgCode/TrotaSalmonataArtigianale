@@ -1,4 +1,4 @@
-const isBookingOpen = 0; // 2 = prenotazione, 1 = aperto, 0 = chiuso
+const isBookingOpen = 2; // 2 = prenotazione, 1 = aperto, 0 = chiuso
 
 const products = [
     { id: '1', name: 'Hamburger', sheetColumn: 'B', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false, badge: 'Novità' },
@@ -29,7 +29,7 @@ function render() {
         banner.className = 'banner banner-closed';
         productsGrid.classList.add('grid-closed');
         statusMsg.style.display = "block";
-        statusMsg.textContent = "❌ Le ordinazioni sono chiuse. Riprova domani.";
+        statusMsg.textContent = "❌ Le ordinazioni al momento sono chiuse.";
     } else if (isBookingOpen === 2) {
         // Prenotazione
         banner.style.display = "block";
