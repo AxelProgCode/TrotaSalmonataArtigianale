@@ -12,7 +12,7 @@
     <header class="hero">
         <img src="img/header.png" alt="Trota Salmonata Artigianale" class="hero-icon-img">
         <h1>Trota Salmonata Artigianale</h1>
-        <p class="subtitle" id="statusMessage">Seleziona i prodotti e invia l'ordine. Il tuo ordine verrà salvato in automatico.</p>
+        <p class="subtitle" id="statusMessage"><!-- Il contenuto verrà generato dinamicamente da JavaScript --></p>
     </header>
 
     <main class="container">
@@ -24,9 +24,20 @@
 
         <div class="modal-overlay" id="modalOverlay" style="display: none;">
             <div class="modal">
-                <h2>📝 Inserisci il nominativo</h2>
+                <h2 id="modalTitle">📝 Inserisci il nominativo</h2>
                 <p class="modal-subtitle">Per completare l'ordine, indica chi sei</p>
+                
                 <input type="text" id="customerName" placeholder="Il tuo nome e cognome" class="modal-input" />
+                
+                <!-- Riepilogo Ordine -->
+                <div class="order-summary" id="orderSummary" style="display: none;">
+                    <h3>📦 Riepilogo Ordine</h3>
+                    <div id="orderSummaryContent"></div>
+                </div>
+                
+                <!-- Campo Note -->
+                <textarea id="orderNotes" placeholder="Inserisci eventuali note..." class="modal-input modal-textarea" rows="3"></textarea>
+                
                 <div class="modal-buttons">
                     <button class="btn-cancel" id="btnCancelOrder">Annulla</button>
                     <button class="btn-confirm" id="btnConfirmOrder">✅ Invia Ordine</button>

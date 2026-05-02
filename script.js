@@ -1,4 +1,4 @@
-const isBookingOpen = 0; // 2 = prenotazione, 1 = aperto, 0 = chiuso
+const isBookingOpen = 1; // 2 = prenotazione, 1 = aperto, 0 = chiuso
 
 const products = [
     { id: '1', name: 'Filetto Surgelato', sheetColumn: 'B', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e sfilettato.', price: '20,00/kg', soldOut: false },
@@ -47,7 +47,7 @@ function render() {
         banner.style.display = "none";
         productsGrid.classList.remove('grid-closed');
         statusMsg.style.display = "block";
-        statusMsg.textContent = "✅ Seleziona i prodotti e invia l'ordine. Il tuo ordine verrà salvato in automatico.";
+        statusMsg.textContent = "✅ Sistema attivo. Seleziona i prodotti e invia l'ordine.";
     }
 
     productsGrid.innerHTML = products.map(p => {
@@ -115,12 +115,17 @@ document.getElementById('btnOpenOrder').onclick = () => {
         showToast('⚠️ Il carrello è vuoto!', 'error');
         return;
     }
+    
+    // Aggiorna il riepilogo ordine
+    updateOrderSummary();
+    
     document.getElementById('modalOverlay').style.display = 'flex';
     document.getElementById('customerName').value = '';
+    document.getElementById('orderNotes').value = '';
     document.getElementById('modalError').style.display = 'none';
     
     // Personalizza il titolo del modal in base allo stato
-    const modalTitle = document.querySelector('#modalOverlay .modal h2');
+    const modalTitle = document.getElementById('modalTitle');
     if (modalTitle) {
         modalTitle.textContent = isBookingOpen === 2 ? '📋 Prenota il tuo ordine' : '📝 Inserisci il nominativo';
     }
@@ -158,11 +163,13 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
         return;
     }
 
+    const notes = document.getElementById('orderNotes').value.trim();
+
     document.getElementById('btnConfirmOrder').disabled = true;
     document.getElementById('btnConfirmOrder').innerHTML = '⏳ Invio in corso...';
 
     try {
-        await sendToGoogleSheet(name);
+        await sendToGoogleSheet(name, notes);
         document.getElementById('modalOverlay').style.display = 'none';
         
         document.getElementById('successCustomerName').innerText = name;
@@ -182,6 +189,7 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
         cart = {};
         render();
     } catch (error) {
+        console.error('Errore invio:', error);
         showToast('❌ Errore nell\'invio. Riprova.', 'error');
     } finally {
         document.getElementById('btnConfirmOrder').disabled = false;
@@ -189,7 +197,46 @@ document.getElementById('btnConfirmOrder').onclick = async () => {
     }
 };
 
-async function sendToGoogleSheet(customerName) {
+function updateOrderSummary() {
+    const summaryDiv = document.getElementById('orderSummary');
+    const summaryContent = document.getElementById('orderSummaryContent');
+    const items = Object.entries(cart);
+    
+    if (items.length === 0) {
+        summaryDiv.style.display = 'none';
+        return;
+    }
+    
+    summaryDiv.style.display = 'block';
+    
+    let totalItems = 0;
+    let html = '';
+    
+    items.forEach(([id, qty]) => {
+        const product = products.find(p => p.id === id);
+        if (product && qty > 0) {
+            totalItems += qty;
+            
+            html += `
+                <div class="order-summary-item">
+                    <span>${product.name}</span>
+                    <span>${qty}</span>
+                </div>
+            `;
+        }
+    });
+    
+    html += `
+        <div class="order-summary-item">
+            <span><strong>Totale prodotti</strong></span>
+            <span><strong>${totalItems}</strong></span>
+        </div>
+    `;
+    
+    summaryContent.innerHTML = html;
+}
+
+async function sendToGoogleSheet(customerName, notes) {
     const orderData = {
         nome: customerName,
         surgelato: cart['1'] || 0,
@@ -199,15 +246,24 @@ async function sendToGoogleSheet(customerName) {
         vasettoPorro: cart['5'] || 0,
         hamburger: cart['6'] || 0,
         cubetti: cart['7'] || 0,
+        note: notes || '',
         timestamp: new Date().toISOString()
     };
 
-    return await fetch(GOOGLE_SHEET_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-    });
+    try {
+        await fetch(GOOGLE_SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        });
+        
+        return { success: true };
+        
+    } catch (error) {
+        console.error('Errore invio:', error);
+        throw new Error('Errore di rete. Verifica la connessione e riprova.');
+    }
 }
 
 function showToast(message, type = 'success') {
