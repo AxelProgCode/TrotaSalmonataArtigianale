@@ -1,4 +1,4 @@
-const isBookingOpen = 0; // 2 = prenotazione, 1 = aperto, 0 = chiuso
+const isBookingOpen = 1; // 2 = prenotazione, 1 = aperto, 0 = chiuso
 
 const products = [
     { id: '1', name: 'Filetto Surgelato', sheetColumn: 'B', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e sfilettato.', price: '20,00/kg', soldOut: false },
@@ -7,12 +7,13 @@ const products = [
     { id: '4', name: 'Bocconcini Marinati', sheetColumn: 'E', img: 'img/bocconcini-marinati.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false },
     { id: '5', name: 'Bocconcini Marinati con Porro e Sedano', sheetColumn: 'F', img: 'img/bocconcini-marinati-porro-e-sedano.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false },
     { id: '6', name: 'Hamburger Surgelato', sheetColumn: 'G', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false, badge: 'Novità' },
-    { id: '7', name: 'Cubetti Surgelati per Sugo', sheetColumn: 'H', img: 'img/cubetti-sugo.jpeg', desc: 'Trito precotto in cubetti (si consigliano 2 cubetti ogni etto di pasta).', price: '0,50/pz', soldOut: false }
+    { id: '7', name: 'Cubetti per Sugo Surgelati', sheetColumn: 'H', img: 'img/cubetti-sugo.jpeg', desc: 'Trito precotto (si consigliano 2 cubetti ogni etto di pasta).', price: '0,50/pz', soldOut: false }
 ];
 
 let cart = {};
 
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxfHQbIfgmu7APL3aQurbua4i057qr3q00c3fobhdS3ZfmTyO9L7pMko3bob1ZkjlLOog/exec';
+const MAX_QTY_PER_PRODUCT = 25;
 
 function render() {
     const productsGrid = document.getElementById('productsGrid');
@@ -85,8 +86,20 @@ function updateQty(id, delta) {
     const product = products.find(p => p.id === id);
     if (isBookingOpen === 0 || (product && product.soldOut)) return;
 
-    cart[id] = (cart[id] || 0) + delta;
-    if (cart[id] <= 0) delete cart[id];
+    const newQty = (cart[id] || 0) + delta;
+    
+    // Limite massimo per prodotto
+    if (newQty > MAX_QTY_PER_PRODUCT) {
+        showToast(`⚠️ Massimo ${MAX_QTY_PER_PRODUCT} unità per prodotto.`, 'error');
+        return;
+    }
+    
+    if (newQty <= 0) {
+        delete cart[id];
+    } else {
+        cart[id] = newQty;
+    }
+    
     render();
 }
 
