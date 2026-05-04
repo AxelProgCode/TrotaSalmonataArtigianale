@@ -1,4 +1,4 @@
-const isBookingOpen = 1; // 2 = prenotazione, 1 = aperto, 0 = chiuso
+const isBookingOpen = 0; // 2 = prenotazione, 1 = aperto, 0 = chiuso
 
 const products = [
     { id: '1', name: 'Filetto Surgelato', sheetColumn: 'B', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e sfilettato.', price: '20,00/kg', soldOut: false },
@@ -13,7 +13,7 @@ const products = [
 let cart = {};
 
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxfHQbIfgmu7APL3aQurbua4i057qr3q00c3fobhdS3ZfmTyO9L7pMko3bob1ZkjlLOog/exec';
-const MAX_QTY_PER_PRODUCT = 25;
+const MAX_QTY_PER_PRODUCT = 20;
 
 function render() {
     const productsGrid = document.getElementById('productsGrid');
