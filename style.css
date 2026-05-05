@@ -222,7 +222,7 @@ main {
     color: white;
     border: none;
     padding: 1rem 1rem;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     font-weight: bold;
     cursor: pointer;
     transition: var(--transition);
