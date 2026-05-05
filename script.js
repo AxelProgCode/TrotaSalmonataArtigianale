@@ -1,13 +1,13 @@
 const isBookingOpen = 1; // 2 = prenotazione, 1 = aperto, 0 = chiuso
 
 const products = [
-    { id: '1', name: 'Filetto Surgelato', sheetColumn: 'B', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e sfilettato.', price: '20,00/kg', soldOut: false },
-    { id: '2', name: 'Filetto Affumicato', sheetColumn: 'C', img: 'img/filetto-affumicato.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false },
-    { id: '3', name: 'Filetto Affumicato allo Speck', sheetColumn: 'D', img: 'img/filetto-affumicato-speck.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false },
-    { id: '4', name: 'Bocconcini Marinati', sheetColumn: 'E', img: 'img/bocconcini-marinati.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false },
-    { id: '5', name: 'Bocconcini Marinati con Porro e Sedano', sheetColumn: 'F', img: 'img/bocconcini-marinati-porro-e-sedano.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false },
-    { id: '6', name: 'Hamburger Surgelato', sheetColumn: 'G', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false, badge: 'Novità' },
-    { id: '7', name: 'Cubetti Surgelati per Sugo', sheetColumn: 'H', img: 'img/cubetti-sugo.jpeg', desc: 'Trito precotto (si consigliano 2 cubetti ogni etto di pasta).', price: '0,50/pz', soldOut: false }
+    { id: '1', name: 'Filetto Surgelato', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e sfilettato.', price: '20,00/kg', soldOut: false },
+    { id: '2', name: 'Filetto Affumicato', img: 'img/filetto-affumicato.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false },
+    { id: '3', name: 'Filetto Affumicato allo Speck', img: 'img/filetto-affumicato-speck.jpeg', desc: 'Sfilettato, aromatizzato e sottovuoto.', price: '30,00/kg', soldOut: false },
+    { id: '4', name: 'Bocconcini Marinati', img: 'img/bocconcini-marinati.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false },
+    { id: '5', name: 'Bocconcini Marinati con Porro e Sedano', img: 'img/bocconcini-marinati-porro-e-sedano.jpeg', desc: 'In olio con erbe aromatiche.', price: '5,00/pz', soldOut: false },
+    { id: '6', name: 'Hamburger Surgelato', img: 'img/hamburger.jpeg', desc: '100% trota, speziato.', price: '3,00/pz', soldOut: false },
+    { id: '7', name: 'Cubetti Surgelati per Sugo', img: 'img/cubetti-sugo.jpeg', desc: 'Trito precotto (si consigliano 2 cubetti ogni etto di pasta).', price: '0,50/pz', soldOut: false }
 ];
 
 let cart = {};
@@ -62,7 +62,7 @@ function render() {
         return `
             <div class="product-card ${cardClass}">
                 <div class="product-image">
-                    <img src="${p.img}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div class=\\'product-emoji\\'>🐟</div>'">
+                    <img src="${p.img}" alt="${p.name}">
                 </div>
                 <div class="product-name">${p.name}</div>
                 <div class="product-desc">${p.desc}</div>

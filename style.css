@@ -164,11 +164,6 @@ main {
     transform: scale(1.05);
 }
 
-.product-emoji {
-    font-size: 3rem;
-    text-align: center;
-    margin-bottom: 1rem;
-}
 .product-name {
     font-size: 1.2rem;
     font-weight: 700;
