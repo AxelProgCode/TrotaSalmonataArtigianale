@@ -15,7 +15,7 @@
     --color-success: #25D366;
     --color-error: #e74c3c;
     --radius-sm: 16px;
-    --radius-md: 20px;
+    --radius-md: 25px;
     --radius-lg: 30px;
     --radius-xlg: 50px;
     --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -58,7 +58,7 @@ main {
     object-fit: contain;
     display: block;
     margin: 0 auto 0.5rem;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    border-radius: 999px;
 }
 .hero h1 {
     font-size: 2.2rem;
@@ -193,7 +193,7 @@ main {
 .product-meta span {
     background: #f0f4f2;
     padding: 2px 8px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
 }
 
 .qty-controls {
@@ -297,7 +297,7 @@ main {
     border: none;
     text-decoration: none;
     padding: 0.7rem 1.2rem;
-    border-radius: 30px;
+    border-radius: var(--radius-lg);
     font-weight: bold;
     cursor: pointer;
     transition: var(--transition);
@@ -313,7 +313,7 @@ main {
     background: none;
     border: 1px solid red;
     padding: 0.5rem;
-    border-radius: 10px;
+    border-radius: var(--radius-lg);
     cursor: pointer;
     color: red;
     order: -1;
@@ -393,7 +393,7 @@ main {
     color: white;
     border: none;
     padding: 0.7rem 1.5rem;
-    border-radius: 30px;
+    border-radius: var(--radius-lg);
     font-weight: bold;
     cursor: pointer;
     transition: var(--transition);
@@ -411,7 +411,7 @@ main {
     color: var(--color-text);
     border: 2px solid var(--color-border);
     padding: 0.7rem 1.5rem;
-    border-radius: 30px;
+    border-radius: var(--radius-lg);
     font-weight: bold;
     cursor: pointer;
     transition: var(--transition);
@@ -503,23 +503,34 @@ main {
 
 @media (max-width: 600px) {
     .cart-summary {
-        flex-direction: row;
         flex-wrap: wrap;
         text-align: center;
         bottom: 0.5rem;
         width: 95%;
+        padding: 0.8rem 1rem;
+        gap: 0.5rem;
     }
-    .btn-clear {
-        order: 2;
-        width: 100%;
-    }
-    .btn-order {
-        width: auto;
-        justify-content: center;
-        flex: 1;
-    }
+    
     #cartText {
         width: 100%;
+        order: -1;
+        font-size: 0.9rem;
+    }
+    
+    .btn-clear {
         order: 0;
+        width: auto;
+        flex: 1;
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+    
+    .btn-order {
+        order: 0;
+        width: auto;
+        flex: 2;
+        justify-content: center;
+        font-size: 0.85rem;
+        padding: 0.7rem;
     }
 }
