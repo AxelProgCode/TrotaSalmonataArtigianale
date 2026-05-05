@@ -1,4 +1,4 @@
-const isBookingOpen = 1; // 2 = prenotazione, 1 = aperto, 0 = chiuso
+const isBookingOpen = 0; // 2 = prenotazione, 1 = aperto, 0 = chiuso
 
 const products = [
     { id: '1', name: 'Filetto Surgelato', sheetColumn: 'B', img: 'img/filetto-surgelato.jpeg', desc: 'Pulito e sfilettato.', price: '20,00/kg', soldOut: false },
