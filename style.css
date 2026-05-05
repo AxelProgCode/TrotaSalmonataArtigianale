@@ -14,9 +14,9 @@
     --color-border: #e0d8ce;
     --color-success: #25D366;
     --color-error: #e74c3c;
-    --radius-sm: 10px;
-    --radius-md: 16px;
-    --radius-lg: 20px;
+    --radius-sm: 16px;
+    --radius-md: 20px;
+    --radius-lg: 30px;
     --radius-xlg: 50px;
     --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.10);
